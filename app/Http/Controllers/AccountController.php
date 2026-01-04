@@ -59,6 +59,8 @@ class AccountController extends Controller
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+            return redirect()->route('account.profile');
         } else {
 
             return redirect()->route('account.login')
@@ -70,5 +72,12 @@ class AccountController extends Controller
     public function profile()
     {
         return view('account.profile');
+    }
+
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('account.login');
     }
 }
