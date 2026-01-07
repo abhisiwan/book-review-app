@@ -11,7 +11,10 @@
                     </div>
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <img src="images/profile-img-1.jpg" class="img-fluid rounded-circle" alt="Luna John">
+                            @if (Auth::user()->image != '')
+                                <img src="{{ asset('uploads/profile/thumb/' . Auth::user()->image) }}"
+                                    class="img-fluid rounded-circle" width="90px;" alt="Luna John">
+                            @endif
                         </div>
                         <div class="h5 text-center">
                             <strong>{{ $user->name }}</strong>
@@ -24,37 +27,18 @@
                         Navigation
                     </div>
                     <div class="card-body sidebar">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a href="book-listing.html">Books</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="reviews.html">Reviews</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="profile.html">Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="my-reviews.html">My Reviews</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="change-password.html">Change Password</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('account.logout') }}">Logout</a>
-                            </li>
-                        </ul>
+                        @include('layouts.sidebar')
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
-                @include('layouts.message');
+                @include('layouts.message')
                 <div class="card border-0 shadow">
                     <div class="card-header  text-white">
                         Profile
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('account.updateProfile') }}" method="POST">
+                        <form action="{{ route('account.updateProfile') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -76,8 +60,15 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Image</label>
-                                <input type="file" name="image" id="image" class="form-control">
-                                {{-- <img src="images/profile-img-1.jpg" class="img-fluid mt-4" alt="Luna John"> --}}
+                                <input type="file" name="image" id="image"
+                                    class="form-control @error('image') is-invalid @enderror">
+                                @error('image')
+                                    <p class="invalid-feedback">{{ $message }}</p>
+                                @enderror
+                                @if (Auth::user()->image != '')
+                                    <img src="{{ asset('uploads/profile/thumb/' . Auth::user()->image) }}"
+                                        class="img-fluid mt-4" width="90px;" alt="Luna John">
+                                @endif
                             </div>
                             <button class="btn btn-primary mt-2" type="submit">Update</button>
                         </form>
